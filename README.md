@@ -88,4 +88,4 @@ uponor_knx_rf_thermostat:
       name: "Vardagsrum"
       current_temperature: livingroom_temp
       target_temperature: livingroom_target
-      battery_state: vardagsrum_battery
+      battery_state: livingroom_battery
