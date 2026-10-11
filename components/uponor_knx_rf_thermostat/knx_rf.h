@@ -11,9 +11,10 @@ namespace uponor_knx_rf_thermostat {
 static const char *TAG = "UPONOR_RF";
 static byte buffer[400] = {0xFF};
 
+// State tracking for strict 4-packet / 6-second window burst detection per thermostat ID
 struct ThermostatState {
-    uint32_t last_packet_time = 0;
-    int burst_count = 0;
+    uint32_t first_packet_time = 0;
+    uint8_t packet_count = 0;
     uint32_t last_trigger_time = 0;
 };
 
@@ -183,33 +184,38 @@ public:
 
                 uint8_t first_byte = knxdata.data[0];
 
-                // Detektera knapptryckning på typ 34 eller 14 via burst-intervall (~1.53s)
-                if (first_byte == 0x34 || first_byte == 0x14) {
+                // Detect button press burst: requires 4 packets starting with 0x34 within a 6-second window
+                if (first_byte == 0x34) {
                     uint32_t now = millis();
                     ThermostatState &st = states_[temp_id];
-                    uint32_t diff = now - st.last_packet_time;
 
-                    if (st.last_packet_time > 0 && diff >= 1000 && diff <= 3000) {
-                        st.burst_count++;
-                    } else if (diff > 4000) {
-                        st.burst_count = 1;
-                    }
-                    st.last_packet_time = now;
-
-                    if (st.burst_count >= 2 && (now - st.last_trigger_time > 10000)) {
-                        st.last_trigger_time = now;
-                        st.burst_count = 0;
-
-                        auto it = thermostats_.find(temp_id);
-                        if (it != thermostats_.end()) {
-                            ESP_LOGW(TAG, "🔘 KNAPPTRYCKNING DETEKTERAD på [%s] (ID: %s)", it->second->name_.c_str(), temp_id);
+                    // Check 10-second cooldown period after a recent trigger
+                    if (st.last_trigger_time == 0 || (now - st.last_trigger_time >= 10000)) {
+                        // Check if we need to start a new 6-second window
+                        if (st.packet_count == 0 || (now - st.first_packet_time > 6000)) {
+                            st.first_packet_time = now;
+                            st.packet_count = 1;
                         } else {
-                            ESP_LOGW(TAG, "🔍 NY ENHET / KNAPPTRYCKNING Upptäckt! ID: %s (Anteckna klockslag och rum)", temp_id);
+                            st.packet_count++;
+
+                            // Trigger immediately when the 5th packet arrives within the 6-second window
+                            if (st.packet_count >= 5) {
+                                st.last_trigger_time = now;
+                                st.packet_count = 0;
+                                st.first_packet_time = 0;
+
+                                auto it = thermostats_.find(temp_id);
+                                if (it != thermostats_.end()) {
+                                    ESP_LOGW(TAG, "🔘 BUTTON PRESS DETECTED on room [%s] (ID: %s)", it->second->name_.c_str(), temp_id);
+                                } else {
+                                    ESP_LOGW(TAG, "🔍 NEW DEVICE / BUTTON PRESS Detected! ID: %s (Note timestamp and room)", temp_id);
+                                }
+                            }
                         }
                     }
                 }
 
-                // Ordinarie parsning
+                // Standard telemetry parsing
                 if (pckidx > 34 && knxdata.data[knx_offset + 1] == 68 && knxdata.data[knx_offset + 2] == 255) {
                     knxdata = parse(knxdata);
                     auto it = thermostats_.find(knxdata.sensor_id);
