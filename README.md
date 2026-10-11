@@ -65,16 +65,16 @@ external_components:
 # Define template sensors for your thermostats
 sensor:
   - platform: template
-    id: vardagsrum_temp
-    name: "Vardagsrum Current Temperature"
+    id: livingroom_temp
+    name: "Livingroom Current Temperature"
   - platform: template
-    id: vardagsrum_target
-    name: "Vardagsrum Target Temperature"
+    id: livingroom_target
+    name: "Livingroom Target Temperature"
 
 binary_sensor:
   - platform: template
-    id: vardagsrum_battery
-    name: "Vardagsrum Battery State"
+    id: livingroom_battery
+    name: "Livingroom Battery State"
 
 # Configure the gateway and map your thermostats
 uponor_knx_rf_thermostat:
@@ -86,6 +86,6 @@ uponor_knx_rf_thermostat:
   thermostats:
     - address: "00744360E2B0"
       name: "Vardagsrum"
-      current_temperature: vardagsrum_temp
-      target_temperature: vardagsrum_target
+      current_temperature: livingroom_temp
+      target_temperature: livingroom_target
       battery_state: vardagsrum_battery
