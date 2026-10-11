@@ -89,3 +89,21 @@ uponor_knx_rf_thermostat:
       current_temperature: livingroom_temp
       target_temperature: livingroom_target
       battery_state: livingroom_battery
+```
+---
+
+## How to Discover New Thermostats
+
+1. Flash your ESP32 with the component installed and open the **ESPHome logs**.
+2. Go to a room with an unconfigured thermostat and press its link/transmission button.
+3. The component detects the burst transmission and outputs a warning message in the logs, e.g.:
+   ```text
+   [18:14:38.929][W][UPONOR_RF:207]: 🔍 NEW DEVICE / BUTTON PRESS Detected! ID: 00744360E2C5 (Note timestamp and room)
+   ```
+4. Note the device ID (`00744360E2C5`) and map it to your desired room name in your YAML configuration file.
+
+---
+
+## License
+
+This project is open-source. Feel free to use, modify, and share!
