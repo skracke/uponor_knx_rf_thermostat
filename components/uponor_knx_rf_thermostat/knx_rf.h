@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esphome.h"
+#include <SPI.h>
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
 #include <map>
 #include <string>
