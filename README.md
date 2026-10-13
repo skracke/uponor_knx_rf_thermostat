@@ -33,7 +33,21 @@ An ESPHome external component to integrate **Uponor KNX RF wireless thermostats*
 
 ## Wiring & GPIO Mapping
 
-Connect the CC1101 module to your ESP32 using the following recommended wiring scheme (matching the default software configuration):
+Connect the CC1101 module to your D1 mini (ESP8266) using the following recommended wiring scheme (matching the default software configuration):
+
+| CC1101 Pin | D1 mini Pin | Description |
+| :--- | :--- | :--- |
+| **VCC** | 3.3V | Power Supply (Ensure a stable 3.3V supply) |
+| **GND** | GND | Ground |
+| **CSN** | GPIO 5 (D1) | SPI Chip Select |
+| **SCK** | GPIO 14 (D5) | SPI Clock |
+| **MOSI** | GPIO 13 (D7) | SPI Master Out Slave In |
+| **MISO** | GPIO 12 (D6) | SPI Master In Slave Out |
+| **GDO0** | GPIO 4  (D2) | Digital Output 0 (RX/TX Packet Indicator) |
+
+
+
+Connect the CC1101 module to your ESP32 using the following recommended wiring scheme:
 
 | CC1101 Pin | ESP32 Pin | Description |
 | :--- | :--- | :--- |
