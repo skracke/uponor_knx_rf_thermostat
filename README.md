@@ -71,47 +71,6 @@ Add this component as an `external_components` source in your ESPHome YAML confi
 
 ```yaml
 esphome:
-  name: my-uponor-gateway
-
-esp32:
-  board: esp32dev
-
-external_components:
-  - source: github://skracke/esphome-uponor-thermostat@main
-    components: [ uponor_knx_rf_thermostat ]
-
-# Define template sensors for your thermostats
-sensor:
-  - platform: template
-    id: livingroom_temp
-    name: "Livingroom Current Temperature"
-  - platform: template
-    id: livingroom_target
-    name: "Livingroom Target Temperature"
-
-binary_sensor:
-  - platform: template
-    id: livingroom_battery
-    name: "Livingroom Battery State"
-
-# Configure the gateway and map your thermostats
-uponor_knx_rf_thermostat:
-  sck_pin: 22
-  miso_pin: 23
-  mosi_pin: 13
-  csn_pin: 14
-  gdo0_pin: 21
-  thermostats:
-    - address: "00744360E2B2"
-      name: "Livingroom"
-      current_temperature: livingroom_temp
-      target_temperature: livingroom_target
-      battery_state: livingroom_battery
-```
----
-
-```yaml
-esphome:
   name: uponor-knxrf
   friendly_name: Uponor-KNXRF
   libraries:
@@ -125,24 +84,64 @@ external_components:
   - source: github://skracke/uponor_knx_rf_thermostat@main
     components: [ uponor_knx_rf_thermostat ]
 
-logger:
+sensor:
+  - platform: template
+    id: livingroom_temp
+    name: "Livingroom temperature"
+    device_class: temperature
+    accuracy_decimals: 1
+    filters:
+      - timeout: 4h
+  - platform: template
+    id: livingroom_target
+    name: "Livingroom target temperature"
+    device_class: temperature
+    accuracy_decimals: 1
+    filters:
+      - timeout: 4h
 
-api:
-  encryption:
-    key: "XXX"
+binary_sensor:
+  - platform: template
+    id: livingroom_battery
+    name: "Livingroom battery state"
+    device_class: battery
 
-ota:
-  - platform: esphome
-    encryption: 
+spi:
+  clk_pin: GPIO14
+  miso_pin: GPIO12
+  mosi_pin: GPIO13
 
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-  ap:
-    ssid: Uponor-KNXRF Fallback Hotspot
-    password: "XXX"
+uponor_knx_rf_thermostat:
+  sck_pin: 14
+  miso_pin: 12
+  mosi_pin: 13
+  csn_pin: 5
+  gdo0_pin: 4
+  thermostats:
+    - address: "00744360E2B2"
+      name: "Uterum"
+      current_temperature: livingroom_temp
+      target_temperature: livingroom_target
+      battery_state: livingroom_battery
+```
 
-captive_portal:
+---
+
+```yaml
+esphome:
+  name: my-uponor-gateway
+  libraries:
+    - SmartRC-CC1101-Driver-Lib
+    - SPI
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+external_components:
+  - source: github://skracke/uponor_knx_rf_thermostat@main
+    components: [ uponor_knx_rf_thermostat ]
 
 sensor:
   - platform: template
