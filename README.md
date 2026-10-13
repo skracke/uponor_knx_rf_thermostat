@@ -68,6 +68,7 @@ Connect the CC1101 module to your ESP32 using the following recommended wiring s
 ## Installation & Usage
 
 Add this component as an `external_components` source in your ESPHome YAML configuration file:
+
 D1 Mini
 ```yaml
 esphome:
@@ -132,8 +133,8 @@ ESP32
 esphome:
   name: my-uponor-gateway
   libraries:
-    - SmartRC-CC1101-Driver-Lib
     - SPI
+    - SmartRC-CC1101-Driver-Lib
 
 esp32:
   board: esp32dev
