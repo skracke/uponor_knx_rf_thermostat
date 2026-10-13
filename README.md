@@ -24,7 +24,7 @@ An ESPHome external component to integrate **Uponor KNX RF wireless thermostats*
 
 1. **Microcontroller:** ESP8266 "D1 mini"
    * [Amazon Link (Example)](https://www.amazon.se/-/en/EPLZON-Development-ESP8266-12F-Connector-Compatible/dp/B0DPJWJX1X?th=1)
-2. **Microcontroller:** or ESP32 DevKit (ESP32-WROOM-32)
+2. **or Microcontroller:** ESP32 DevKit (ESP32-WROOM-32)
    * [Amazon Link (Example)](https://www.amazon.se/ESP32-WROOM-32-utvecklingskort-ESP-32S-Bluetooth-Arduino/dp/B084KWNMM4)
 3. **RF Transceiver:** CC1101 868MHz Module
    * [Amazon Link (Example)](https://www.amazon.se/dp/B0FB3K3CQP?ref=ppx_yo2ov_dt_b_fed_asin_title)
