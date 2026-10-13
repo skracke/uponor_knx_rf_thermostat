@@ -102,12 +102,89 @@ uponor_knx_rf_thermostat:
   csn_pin: 14
   gdo0_pin: 21
   thermostats:
-    - address: "00744360E2B0"
-      name: "Vardagsrum"
+    - address: "00744360E2B2"
+      name: "Livingroom"
       current_temperature: livingroom_temp
       target_temperature: livingroom_target
       battery_state: livingroom_battery
 ```
+---
+
+```yaml
+esphome:
+  name: uponor-knxrf
+  friendly_name: Uponor-KNXRF
+  libraries:
+    - SPI
+    - SmartRC-CC1101-Driver-Lib
+
+esp8266:
+  board: d1_mini
+
+external_components:
+  - source: github://skracke/uponor_knx_rf_thermostat@main
+    components: [ uponor_knx_rf_thermostat ]
+
+logger:
+
+api:
+  encryption:
+    key: "XXX"
+
+ota:
+  - platform: esphome
+    encryption: 
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: Uponor-KNXRF Fallback Hotspot
+    password: "XXX"
+
+captive_portal:
+
+sensor:
+  - platform: template
+    id: livingroom_temp
+    name: "Livingroom temperature"
+    device_class: temperature
+    accuracy_decimals: 1
+    filters:
+      - timeout: 4h
+  - platform: template
+    id: livingroom_target
+    name: "Livingroom target temperature"
+    device_class: temperature
+    accuracy_decimals: 1
+    filters:
+      - timeout: 4h
+
+binary_sensor:
+  - platform: template
+    id: livingroom_battery
+    name: "Livingroom battery state"
+    device_class: battery
+
+spi:
+  clk_pin: GPIO14
+  miso_pin: GPIO12
+  mosi_pin: GPIO13
+
+uponor_knx_rf_thermostat:
+  sck_pin: 14
+  miso_pin: 12
+  mosi_pin: 13
+  csn_pin: 5
+  gdo0_pin: 4
+  thermostats:
+    - address: "00744360E2B2"
+      name: "Uterum"
+      current_temperature: livingroom_temp
+      target_temperature: livingroom_target
+      battery_state: livingroom_battery
+```
+
 ---
 
 ## How to Discover New Thermostats
