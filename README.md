@@ -167,16 +167,16 @@ binary_sensor:
     device_class: battery
 
 spi:
-  clk_pin: GPIO14
-  miso_pin: GPIO12
+  clk_pin: GPIO22
+  miso_pin: GPIO23
   mosi_pin: GPIO13
 
 uponor_knx_rf_thermostat:
-  sck_pin: 14
-  miso_pin: 12
+  sck_pin: 22
+  miso_pin: 23
   mosi_pin: 13
-  csn_pin: 5
-  gdo0_pin: 4
+  csn_pin: 14
+  gdo0_pin: 21
   thermostats:
     - address: "00744360E2B2"
       name: "Uterum"
