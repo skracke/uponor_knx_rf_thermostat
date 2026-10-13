@@ -61,7 +61,7 @@ Connect the CC1101 module to your ESP32 using the following recommended wiring s
 
 > *Note: Double-check your specific CC1101 module's pinout, as label orders can sometimes vary between manufacturers.*
 
-*Connection diagram*
+*Connection diagram D1 mini*
 ![Wiring detail](https://github.com/skracke/uponor_knx_rf_thermostat/blob/main/D1_mini%20%26%20CC1101%20connection%20diagram.png)
 ---
 
