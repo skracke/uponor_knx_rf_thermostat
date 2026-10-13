@@ -1,6 +1,6 @@
 # ESPHome Uponor KNX RF Thermostat Component
 
-An ESPHome external component to integrate **Uponor KNX RF wireless thermostats** (868.3 MHz) into Home Assistant using an affordable **CC1101 transceiver module** and an ESP32 microcontroller. 
+An ESPHome external component to integrate **Uponor KNX RF wireless thermostats** (868.3 MHz) into Home Assistant using an affordable **CC1101 transceiver module** and an ESP8266/ESP32 microcontroller. 
 
 ---
 
@@ -16,15 +16,17 @@ An ESPHome external component to integrate **Uponor KNX RF wireless thermostats*
 ## Compatibility
 
 * **Tested Model:** Uponor **T-55**
-* **Likely Compatible:** Uponor **T-54** and **T-75** (use similar KNX RF 868.3 MHz protocol packets, though not extensively tested yet).
+* **Likely Compatible:** Uponor **T-54** and **T-75** (use similar KNX RF 868.3 MHz protocol packets, though not tested yet).
 
 ---
 
 ## Hardware Requirements
 
-1. **Microcontroller:** ESP32 DevKit (ESP32-WROOM-32)
+1. **Microcontroller:** ESP8266 "D1 mini"
+   * [Amazon Link (Example)](https://www.amazon.se/-/en/EPLZON-Development-ESP8266-12F-Connector-Compatible/dp/B0DPJWJX1X?th=1)
+2. **Microcontroller:** or ESP32 DevKit (ESP32-WROOM-32)
    * [Amazon Link (Example)](https://www.amazon.se/ESP32-WROOM-32-utvecklingskort-ESP-32S-Bluetooth-Arduino/dp/B084KWNMM4)
-2. **RF Transceiver:** CC1101 868MHz Module
+3. **RF Transceiver:** CC1101 868MHz Module
    * [Amazon Link (Example)](https://www.amazon.se/dp/B0FB3K3CQP?ref=ppx_yo2ov_dt_b_fed_asin_title)
 
 ---
