@@ -150,6 +150,7 @@ sensor:
     id: livingroom_temp
     name: "Livingroom temperature"
     device_class: temperature
+    unit_of_measurement: °C
     accuracy_decimals: 1
     filters:
       - timeout: 4h
@@ -157,6 +158,7 @@ sensor:
     id: livingroom_target
     name: "Livingroom target temperature"
     device_class: temperature
+    unit_of_measurement: °C
     accuracy_decimals: 1
     filters:
       - timeout: 4h
