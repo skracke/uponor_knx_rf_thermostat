@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esphome.h"
+#include "esphome/core/preferences.h"
 #include <SPI.h>
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
 #include <map>
@@ -41,6 +42,10 @@ public:
     sensor::Sensor *target_temperature_sensor_;
     binary_sensor::BinarySensor *battery_state_sensor_;
     
+    ESPPreferenceObject pref_curr_temp_;
+    ESPPreferenceObject pref_target_temp_;
+    ESPPreferenceObject pref_battery_;
+    
     UponorThermostat(std::string id, std::string name, 
                      sensor::Sensor *curr_temp, 
                      sensor::Sensor *target_temp, 
@@ -48,21 +53,53 @@ public:
         : id_(id), name_(name),
           current_temperature_sensor_(curr_temp),
           target_temperature_sensor_(target_temp),
-          battery_state_sensor_(battery) {}
+          battery_state_sensor_(battery) {
+        
+        // Create unique keys for the flash memory based on the thermostat's ID
+        pref_curr_temp_ = global_preferences->make_preference<float>(fnv1_hash((id + "_curr").c_str()));
+        pref_target_temp_ = global_preferences->make_preference<float>(fnv1_hash((id + "_target").c_str()));
+        pref_battery_ = global_preferences->make_preference<int>(fnv1_hash((id + "_batt").c_str()));
+
+        // Load saved values ​​from memory at startup and send them out immediately
+        float loaded_curr = NAN;
+        float loaded_target = NAN;
+        int loaded_batt = -1;
+
+        if (pref_curr_temp_.load(&loaded_curr) && !isnan(loaded_curr)) {
+            if (current_temperature_sensor_ != nullptr)
+                current_temperature_sensor_->publish_state(loaded_curr);
+        }
+        if (pref_target_temp_.load(&loaded_target) && !isnan(loaded_target)) {
+            if (target_temperature_sensor_ != nullptr)
+                target_temperature_sensor_->publish_state(loaded_target);
+        }
+        if (pref_battery_.load(&loaded_batt) && loaded_batt != -1) {
+            if (battery_state_sensor_ != nullptr)
+                battery_state_sensor_->publish_state(loaded_batt == 1);
+        }
+    }
 
     void update_current_temp(double temp) {
-        if (current_temperature_sensor_ != nullptr)
+        if (current_temperature_sensor_ != nullptr) {
             current_temperature_sensor_->publish_state(temp);
+            pref_curr_temp_.save(&temp); // Save to  flash memory
+        }
     }
 
     void update_target_temp(double temp) {
-        if (target_temperature_sensor_ != nullptr)
+        if (target_temperature_sensor_ != nullptr) {
             target_temperature_sensor_->publish_state(temp);
+            pref_target_temp_.save(&temp); // Save to  flash memory
+        }
     }
 
     void update_battery_state(int state) {
-        if (battery_state_sensor_ != nullptr)
-            battery_state_sensor_->publish_state(state == 0);
+        if (battery_state_sensor_ != nullptr) {
+            bool batt_bool = (state == 0);
+            battery_state_sensor_->publish_state(batt_bool);
+            int saved_state = batt_bool ? 1 : 0;
+            pref_battery_.save(&saved_state); // Save to  flash memory
+        }
     }
 };
 
